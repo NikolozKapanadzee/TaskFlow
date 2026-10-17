@@ -1,38 +1,45 @@
 import { TaskStatus } from '../../enums/status.enum';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
-@Entity()
+@Entity('tasks')
 export class Task {
-    @PrimaryGeneratedColumn()
-    id:number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    title:string
+  @Column()
+  title: string;
 
-    @Column({ type: 'text', nullable: true })
-    description?: string
+  @Column({ type: 'text', nullable: true })
+  description?: string;
 
-    @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.TODO })
-    status: TaskStatus;
+  @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.TODO })
+  status: TaskStatus;
 
-    @Column({ type: 'timestamptz', nullable: true })
-    dueDate?: Date
+  @Column({ type: 'timestamptz', nullable: true })
+  dueDate?: Date;
 
-    @CreateDateColumn()
-    createdAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
-
-    @ManyToOne(() => User, (user) => user.tasks, {
+  @ManyToOne(() => User, (user) => user.tasks, {
     nullable: false,
     onDelete: 'CASCADE',
-    })
-    @JoinColumn({ name: 'authorId' })
-    author: User;
+  })
+  @JoinColumn({ name: 'authorId' })
+  author: User;
 
-    @Column()
-    authorId: number;
+  @Column()
+  authorId: number;
 }
