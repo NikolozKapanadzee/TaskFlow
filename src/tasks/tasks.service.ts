@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -35,14 +39,25 @@ export class TasksService {
   }
 
   async update(id: number, dto: UpdateTaskDto, userId: number) {
-    const task = await this.findOne(id, userId);
+    const task = await this.findOwnedTask(id, userId);
     Object.assign(task, dto);
     return this.tasksRepository.save(task);
   }
 
   async remove(id: number, userId: number) {
-    const task = await this.findOne(id, userId);
+    const task = await this.findOwnedTask(id, userId);
     await this.tasksRepository.remove(task);
     return { message: `Task ${id} deleted` };
+  }
+
+  private async findOwnedTask(id: number, userId: number) {
+    const task = await this.tasksRepository.findOneBy({ id });
+    if (!task) {
+      throw new NotFoundException(`Task with id ${id} not found`);
+    }
+    if (task.authorId !== userId) {
+      throw new ForbiddenException('You can only modify your own tasks');
+    }
+    return task;
   }
 }
