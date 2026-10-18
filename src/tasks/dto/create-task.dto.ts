@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
-  IsInt,
   IsOptional,
   IsString,
   MaxLength,
@@ -28,7 +27,4 @@ export class CreateTaskDto {
   @Type(() => Date)
   @IsDate()
   dueDate?: Date;
-
-  @IsInt()
-  authorId: number;
 }
