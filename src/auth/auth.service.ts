@@ -51,6 +51,14 @@ export class AuthService {
     return this.buildResponse(existUser);
   }
 
+  async getCurrentUser(userId: number) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
   private async buildResponse(user: User) {
     const accessToken = await this.jwtService.signAsync({
       sub: user.id,
